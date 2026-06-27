@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <cstdlib>
 #include <pqxx/pqxx>
 
 using namespace std;
@@ -12,12 +11,6 @@ private:
     double salario;
 
 public:
-    Funcionario() {
-        matricula = 0;
-        nome = "";
-        salario = 0;
-    }
-
     Funcionario(int matricula, string nome, double salario) {
         this->matricula = matricula;
         this->nome = nome;
@@ -133,20 +126,9 @@ public:
 
 int main() {
     try {
-        const char* url = getenv("DATABASE_URL");
-
-        if (url == nullptr) {
-            cerr << "Erro: variavel DATABASE_URL nao definida.\n";
-            cerr << "Use: export DATABASE_URL=\"sua_url_do_railway\"\n";
-            return 1;
-        }
+        const char* url = "postgresql://postgres:GpYwdpODJXeWGOAvXxregWUjUyvyhvaM@kodama.proxy.rlwy.net:34628/railway";
 
         pqxx::connection conexao(url);
-
-        if (!conexao.is_open()) {
-            cerr << "Erro ao conectar ao banco de dados.\n";
-            return 1;
-        }
 
         cout << "\nConectado ao banco PostgreSQL com sucesso!\n";
 
@@ -184,7 +166,6 @@ int main() {
 
                     Funcionario f(matricula, nome, salario);
                     dao.inserir(f);
-
                     break;
                 }
 
@@ -194,12 +175,9 @@ int main() {
 
                 case 3: {
                     int matricula;
-
                     cout << "Matricula: ";
                     cin >> matricula;
-
                     dao.buscar(matricula);
-
                     break;
                 }
 
@@ -214,18 +192,14 @@ int main() {
                     cin >> salario;
 
                     dao.atualizarSalario(matricula, salario);
-
                     break;
                 }
 
                 case 5: {
                     int matricula;
-
                     cout << "Matricula: ";
                     cin >> matricula;
-
                     dao.excluir(matricula);
-
                     break;
                 }
 
@@ -238,7 +212,7 @@ int main() {
             }
 
         } while (opcao != 0);
-      
+
     } catch (const exception& e) {
         cerr << "\nErro: " << e.what() << endl;
         return 1;
